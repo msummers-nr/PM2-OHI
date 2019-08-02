@@ -1,0 +1,8 @@
+integration_name: com.newrelic.pm2ohi
+instances:
+  - name: pm2ohi
+    command: all
+    arguments:
+    labels:
+      environment: production
+      role: container

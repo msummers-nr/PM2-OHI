@@ -1,0 +1,9 @@
+name: com.newrelic.pm2ohi
+protocol_version: 3
+description: Collect from PM2
+os: linux
+commands:
+  all:
+    command:
+      - node
+      - /home/ubuntu/PM2-OHI/pm2ohi.js
