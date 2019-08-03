@@ -5,4 +5,4 @@ instances:
     arguments:
     labels:
       environment: production
-      role: container
+      role: load_balancer

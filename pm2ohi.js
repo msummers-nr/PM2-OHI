@@ -20,6 +20,7 @@ function secondsSince(date) {
 }
 
 pmx.initModule({}, function (err, conf) {
+    console.error("Starting PM2OHI");
     conf = conf.module_conf;
 
     pm2.connect(false, function (err) {
@@ -50,34 +51,43 @@ pmx.initModule({}, function (err, conf) {
                 entity.type = "com.newrelic.pm2.process";
                 entity.id_attributes = [];
                 var i = 0;
-                entity.id_attributes[i++] = {"key": "pm_id", "value": process.pm_id};
-                entity.id_attributes[i++] = {"key": "version", "value": process.pm2_env.version};
-                entity.id_attributes[i++] = {"key": "execMode", "value": process.pm2_env.exec_mode};
-                entity.id_attributes[i++] = {"key": "user", "value": process.pm2_env.username};
+                // id_attribute "value" must be a string
+                if (process.pm_id) {
+                    entity.id_attributes[i++] = {"key": "pm_id", "value": process.pm_id.toString()};
+                }
+                if (process.pm2_env.verion) {
+                    entity.id_attributes[i++] = {"key": "version", "value": process.pm2_env.version.toString()};
+                }
+                if (process.pm2_env.exec_mode) {
+                    entity.id_attributes[i++] = {"key": "execMode", "value": process.pm2_env.exec_mode.toString()};
+                }
+                if (process.pm2_env.username) {
+                    entity.id_attributes[i++] = {"key": "user", "value": process.pm2_env.username.toString()};
+                }
 
                 var inventory = {}
                 data[processCount].inventory = inventory;
                 var processSettings = {};
-                 processSettings["name"] = process.name;
-                 processSettings["autorestart"] = process.pm2_env.autorestart;
-                 processSettings["execMode"] = process.pm2_env.exec_mode;
-                 processSettings["execInterpreter"] = process.pm2_env.exec_interpreter;
-                 processSettings["execPath"] = process.pm2_env.pm_exec_path;
-                 processSettings["pmCWD"] = process.pm2_env.pm_cwd;
-                 processSettings["instances"] = process.pm2_env.instances;
-                 //processSettings["nodeArgs"] = process.pm2_env.node_args;
-                 processSettings["pmOutLogPath"] = process.pm2_env.pm_out_log_path;
-                 processSettings["pmErrLogPath"] = process.pm2_env.pm_err_log_path;
-                 processSettings["pmPidPath"] = process.pm2_env.pm_pid_path;
-                 processSettings["vizionRunning"] = process.pm2_env.vizion_running;
-                 processSettings["createdAt"] = process.pm2_env.created_at;
-                 processSettings["pmID"] = process.pm2_env.pm_id;
-                 processSettings["startedInside"] = process.pm2_env.started_inside;
-                 //processSettings["command"] = process.pm2_env.command;
-                 //processSettings["versioning"] = process.pm2_env.versioning;
-                 processSettings["version"] =process.pm2_env.version;
-                 processSettings["username"] =process.pm2_env.username;
-                 inventory["processSettings"] = processSettings;
+                processSettings["name"] = process.name;
+                processSettings["autorestart"] = process.pm2_env.autorestart;
+                processSettings["execMode"] = process.pm2_env.exec_mode;
+                processSettings["execInterpreter"] = process.pm2_env.exec_interpreter;
+                processSettings["execPath"] = process.pm2_env.pm_exec_path;
+                processSettings["pmCWD"] = process.pm2_env.pm_cwd;
+                processSettings["instances"] = process.pm2_env.instances;
+                //processSettings["nodeArgs"] = process.pm2_env.node_args;
+                processSettings["pmOutLogPath"] = process.pm2_env.pm_out_log_path;
+                processSettings["pmErrLogPath"] = process.pm2_env.pm_err_log_path;
+                processSettings["pmPidPath"] = process.pm2_env.pm_pid_path;
+                processSettings["vizionRunning"] = process.pm2_env.vizion_running;
+                processSettings["createdAt"] = process.pm2_env.created_at;
+                processSettings["pmID"] = process.pm2_env.pm_id;
+                processSettings["startedInside"] = process.pm2_env.started_inside;
+                //processSettings["command"] = process.pm2_env.command;
+                //processSettings["versioning"] = process.pm2_env.versioning;
+                processSettings["version"] = process.pm2_env.version;
+                processSettings["username"] = process.pm2_env.username;
+                inventory["processSettings"] = processSettings;
 
 
                 var events = []
@@ -88,7 +98,7 @@ pmx.initModule({}, function (err, conf) {
                 metrics[0] = {}
 
                 // Get the metrics
-                metrics[0]["eventType"] = "PM2MetricsSample";
+                metrics[0]["event_type"] = "PM2MetricsSample";
                 metrics[0]["entity_name"] = entity.type + ":" + entity.name;
                 metrics[0]["processUptimeSeconds"] = secondsSince(process.pm2_env.pm_uptime);
                 metrics[0]["processInstances"] = process.pm2_env.instances
@@ -102,6 +112,7 @@ pmx.initModule({}, function (err, conf) {
             var msgString = JSON.stringify(msg);
             process.stdout.write(msgString, () => {
                 console.error("Flushed");
+                //console.error(msgString);
                 process.exit(0);
             });
         });
