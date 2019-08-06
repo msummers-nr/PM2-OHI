@@ -4,13 +4,10 @@ const pm2 = require('pm2');
 // Version needs to be outside the config file
 const ver = require('./package.json').version;
 const guid = "com.newrelic.pm2ohi";
-var duration = 30;
-// Running restart
-var restartList = {};
 
 function bytesToMB(bytes, precision) {
-    var kilobyte = 1024;
-    var megabyte = kilobyte * 1024;
+    const kilobyte = 1024;
+    const megabyte = kilobyte * 1024;
     return parseFloat((bytes / megabyte).toFixed(precision));
 };
 
@@ -55,15 +52,6 @@ pmx.initModule({}, function (err, conf) {
                 if (process.pm_id) {
                     entity.id_attributes[i++] = {"key": "pm_id", "value": process.pm_id.toString()};
                 }
-                if (process.pm2_env.verion) {
-                    entity.id_attributes[i++] = {"key": "version", "value": process.pm2_env.version.toString()};
-                }
-                if (process.pm2_env.exec_mode) {
-                    entity.id_attributes[i++] = {"key": "execMode", "value": process.pm2_env.exec_mode.toString()};
-                }
-                if (process.pm2_env.username) {
-                    entity.id_attributes[i++] = {"key": "user", "value": process.pm2_env.username.toString()};
-                }
 
                 var inventory = {}
                 data[processCount].inventory = inventory;
@@ -75,7 +63,6 @@ pmx.initModule({}, function (err, conf) {
                 processSettings["execPath"] = process.pm2_env.pm_exec_path;
                 processSettings["pmCWD"] = process.pm2_env.pm_cwd;
                 processSettings["instances"] = process.pm2_env.instances;
-                //processSettings["nodeArgs"] = process.pm2_env.node_args;
                 processSettings["pmOutLogPath"] = process.pm2_env.pm_out_log_path;
                 processSettings["pmErrLogPath"] = process.pm2_env.pm_err_log_path;
                 processSettings["pmPidPath"] = process.pm2_env.pm_pid_path;
@@ -83,8 +70,6 @@ pmx.initModule({}, function (err, conf) {
                 processSettings["createdAt"] = process.pm2_env.created_at;
                 processSettings["pmID"] = process.pm2_env.pm_id;
                 processSettings["startedInside"] = process.pm2_env.started_inside;
-                //processSettings["command"] = process.pm2_env.command;
-                //processSettings["versioning"] = process.pm2_env.versioning;
                 processSettings["version"] = process.pm2_env.version;
                 processSettings["username"] = process.pm2_env.username;
                 inventory["processSettings"] = processSettings;
@@ -99,7 +84,7 @@ pmx.initModule({}, function (err, conf) {
 
                 // Get the metrics
                 metrics[0]["event_type"] = "PM2MetricsSample";
-                metrics[0]["entity_name"] = entity.type + ":" + entity.name;
+                metrics[0]["entity_name"] = entity.name;
                 metrics[0]["processUptimeSeconds"] = secondsSince(process.pm2_env.pm_uptime);
                 metrics[0]["processInstances"] = process.pm2_env.instances
                 metrics[0]["processStatus"] = process.pm2_env.status

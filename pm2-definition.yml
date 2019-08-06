@@ -1,3 +1,5 @@
+# Infra definition file for pm2ohi on Linux
+# Place in /var/db/newrelic-infra/custom-integrations
 name: com.newrelic.pm2ohi
 protocol_version: 2
 description: Collect from PM2

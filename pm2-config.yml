@@ -1,3 +1,6 @@
+# OHI Configuration File
+# For PM2, there is nothing to configure
+# Copy file to: /etc/newrelic-infra/integrations.d/
 integration_name: com.newrelic.pm2ohi
 instances:
   - name: pm2ohi
@@ -5,4 +8,4 @@ instances:
     arguments:
     labels:
       environment: production
-      role: load_balancer
+      role: container
