@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "pm2": "^3.5.1",
+    "pm2": "^5.2.0",
     "pmx": "^1.6.7",
     "request": "^2.88.0"
   }
